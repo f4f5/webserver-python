@@ -1,11 +1,13 @@
 import asyncio
+from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import aiosmtplib
 import random
 import time
+import re
 
 async def sendMail(toaddress, ecode):    
-    message = MIMEText("Sent via aiosmtplib")
+    message = MIMEMultipart("alternative")
     message["From"] = "root@localhost"
     message["To"] = toaddress
     message["Subject"] = "验证码"
@@ -18,14 +20,19 @@ async def sendMail(toaddress, ecode):
 
 async def checkEmail(request):    
     timenow = int(time.time())
-    eaddress = request.body.email
+    tmp = await request.post()
+    eaddress = tmp.get('email')
     if request.app['emailcode'].get(eaddress):
         return '0'    
     ecode = str(random.randint(10000000, 99999999))
     ecode = ecode[-6:]
-    signandlog.emailcode[eaddress] = [ecode,timenow]
-    await sendMail(eaddress, ecode)
-    return '1'
+    request.app['emailcode'][eaddress] = [ecode,timenow]
+    re_email=r'^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}$'
+    if re.match(re_email, eaddress):
+        await sendMail(eaddress, ecode)
+        return '1'
+    else:
+        return '0'
 
 async def kickout(app):
     timenow = int(time.time())

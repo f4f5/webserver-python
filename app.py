@@ -50,16 +50,28 @@ async def start_background_tasks(app):
 #     app['kickout'].cancel()
 #     await app['kickout']
 
+@web.middleware
+async def server_redirect(request, handler):    
+    cookies = request.cookies
+    print('server redirect s', ' the cookie is: ',cookies)    
+    location = cookies.get('redirect')
+    if location:
+        raise web.HTTPFound('https://www.baidu.com')
+    else:
+        response = await handler(request)
+        print('server redirect e')
+        return response
+
+
 async def main(loop):
-    app = web.Application()  
+    app = web.Application(middlewares=[server_redirect])  
     app['loop']=loop  
     app['emailcode'] = {}
     app.on_startup.append(start_background_tasks)
     # app.on_cleanup.append(cleanup_background_tasks)
     aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('./views'))    
-    routes.static('/s', './public', append_version=True)    
-    app.add_routes(routes)
-
+    routes.static('/s', './public', append_version=True)
+    app.add_routes(routes)      
     runner = web.AppRunner(app)
     await runner.setup()
     site = web.TCPSite(runner, 'localhost', 8080)
