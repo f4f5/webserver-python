@@ -8,25 +8,25 @@ routes = web.RouteTableDef()
 
 @routes.get('/mywallet')
 @aiohttp_jinja2.template('mywallet.html')
-async def handler(request):
+async def handler1(request):
     return {'name': 'Andrew', 'surname': 'Svetlov'}
 
 
 @routes.get('/detail')
 @aiohttp_jinja2.template('detail.html')
-async def handler(request):
+async def handler2(request):
     return {'name': 'Andrew', 'surname': 'Svetlov'}
 
 
 @routes.get('/signup')
 @aiohttp_jinja2.template('signup.html')
-async def handler(request):
+async def handler3(request):
     return {'name': 'Andrew', 'surname': 'Svetlov'}
 
 
 @routes.get('/netnode')
 @aiohttp_jinja2.template('netnode.html')
-async def handler(request):
+async def handler4(request):
     return {'name': 'Andrew', 'surname': 'Svetlov'}
 
 @routes.post('/signup_emailcheck')
