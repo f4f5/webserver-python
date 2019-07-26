@@ -45,6 +45,14 @@ async def kickout(app):
         await asyncio.sleep(3600)
         
 async def signup(request):
+    """
+    this function will do the folowing:
+        1. request all servers and block chain to make sure the name/password unique
+        2. request for new wallet from fabric
+        3. store the user identity into levelDB
+        4. send identity info to client
+    """
     data = await request.post()
+
     
     pass
