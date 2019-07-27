@@ -1,9 +1,12 @@
 # server_simple.py
 from aiohttp import web
+import aiohttp
 import asyncio
 import aiohttp_jinja2
 from aiohttp_jinja2 import jinja2
 import signup_and_login as sign
+import json
+
 routes = web.RouteTableDef()
 
 @routes.get('/mywallet')
@@ -29,6 +32,11 @@ async def handler3(request):
 async def handler4(request):
     return {'name': 'Andrew', 'surname': 'Svetlov'}
 
+@routes.get('/introduce')
+@aiohttp_jinja2.template('intro.html')
+async def handler5(request):
+    return {'name': 'Andrew', 'surname': 'Svetlov'}
+
 @routes.post('/signup_emailcheck')
 async def check_email(request):
     return web.Response(text=await sign.checkEmail(request))
@@ -37,10 +45,19 @@ async def check_email(request):
 async def signup(request):    
     return web.Response(text=await sign.signup(request))
 
-@routes.get('/introduce')
-@aiohttp_jinja2.template('intro.html')
-async def handler(request):
-    return {'name': 'Andrew', 'surname': 'Svetlov'}
+@routes.post('/send_info_to')
+async def handle_info(request):
+    data = await request.post()
+    """
+    data description:
+    * fabric client result:
+        signup login query transfer etc.
+    * connetcor result:
+        server list search result
+    * same type server message exchange    
+    """
+
+    return web.Response(text='1')
 
 async def start_background_tasks(app):
     app['kickout'] = app['loop'].create_task(sign.kickout(app))
@@ -62,19 +79,49 @@ async def server_redirect(request, handler):
         print('server redirect e')
         return response
 
+async def init(app):
+    """
+    request connector to fetch info
+    """
+    with open('./config.json','r') as f:
+        appinfo = json.load(f)
+    for k in appinfo:
+        app[k] = appinfo[k] 
+    session = await aiohttp.ClientSession()
+    for url in appinfo['connectors']: 
+        if len(appinfo['require_type']) <=0:
+            break
+        nexturl = url.strip('/')+'/get_server/'
+        for item in appinfo['require_type']:
+            nexturl += item+'&'          
+        async with session.get(nexturl) as resp:
+            ans = await resp.text()
+            print('request for connector answer ',ans)  
+            try:
+                ans = json.loads(ans)
+                for item in appinfo['require_type']:
+                    app[item] = ans[item]
+                break                 
+                pass
+            except Exception:
+                pass  
+              
+            
+    session.close()
 
 async def main(loop):
     app = web.Application(middlewares=[server_redirect])  
     app['loop']=loop  
+    await init(app)
     app['emailcode'] = {}
     app.on_startup.append(start_background_tasks)
     # app.on_cleanup.append(cleanup_background_tasks)
     aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('./views'))    
     routes.static('/s', './public', append_version=True)
     app.add_routes(routes)      
-    runner = web.AppRunner(app)
+    runner = web.AppRunner(app)    
     await runner.setup()
-    site = web.TCPSite(runner, 'localhost', 8080)
+    site = web.TCPSite(runner, 'localhost', app['port'])
     await site.start()
     await asyncio.sleep(99999999999)
 

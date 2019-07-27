@@ -5,6 +5,7 @@ import aiosmtplib
 import random
 import time
 import re
+import utils
 
 async def sendMail(toaddress, ecode):    
     message = MIMEMultipart("alternative")
@@ -15,7 +16,7 @@ async def sendMail(toaddress, ecode):
     message.attach(MIMEText(F"<html><body><h1>验证码: {ecode}</h1></body></html>", "html", "utf-8"))
 
     async with aiosmtplib.SMTP(hostname="127.0.0.1", port=1025) as smtp:
-        await smtp.auth_login(username='jass@qq.com',password='skj')
+        await smtp.auth_login(username='jazz@qq.com',password='skj')
         await smtp.send_message(message)
 
 async def checkEmail(request):    
@@ -47,12 +48,15 @@ async def kickout(app):
 async def signup(request):
     """
     this function will do the folowing:
-        1. request all servers and block chain to make sure the name/password unique
+        1. request block chain to make sure the name unique
         2. request for new wallet from fabric
         3. store the user identity into levelDB
         4. send identity info to client
     """
     data = await request.post()
-
-    
+    login = {'Password': data['inputPassword'], 'Address': data['inputAddress']}
+    def sureAnswer(urls):
+        url = random.choice(urls)
+        urls
+        ans = await utils.post(urls)    
     pass

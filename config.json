@@ -1,0 +1,7 @@
+{
+    "connectors": [],
+    "type":"official_site",
+    "require_type": ["fabric", "official_site"],
+    "ip": "0.0.0.0",
+    "port": 8080
+}
