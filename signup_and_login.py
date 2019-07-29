@@ -54,9 +54,27 @@ async def signup(request):
         4. send identity info to client
     """
     data = await request.post()
-    login = {'Password': data['inputPassword'], 'Address': data['inputAddress']}
-    def sureAnswer(urls):
+    sig = {'Password': data['inputPassword'], 'Address': data['inputAddress']}
+    
+    async def sureAnswer(urls, si):
+        """
+        request log in to fabric hyperledger
+        """
         url = random.choice(urls)
-        urls
-        ans = await utils.post(urls)    
+        url += '/signup'
+        ans = await utils.post(url, si)
+        if not ans.get('signup'):
+            urls.remove(url)
+            await sureAnswer(urls, si)
+        else:
+            return ans
+
+    urls = request.app['fabric'].copy()
+    signup_result = await sureAnswer(urls, sig)    
+    # here deal with the signup_result to fit the page side
+    return signup_result
+
+async def login (request):
     pass
+
+

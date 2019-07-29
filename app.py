@@ -5,6 +5,10 @@ import asyncio
 import aiohttp_jinja2
 from aiohttp_jinja2 import jinja2
 import signup_and_login as sign
+from aiohttp_session import setup, get_session, new_session
+from aiohttp_session  import SimpleCookieStorage  #EncryptedCookieStorage
+from cryptography import fernet
+import base64
 import json
 
 routes = web.RouteTableDef()
@@ -35,6 +39,10 @@ async def handler4(request):
 @routes.get('/introduce')
 @aiohttp_jinja2.template('intro.html')
 async def handler5(request):
+    session = await get_session(request)
+    last = session['last'] if 'last' in session else None
+    print(last,'  ssssss', session)
+    session['last'] = 5555555
     return {'name': 'Andrew', 'surname': 'Svetlov'}
 
 @routes.post('/signup_emailcheck')
@@ -56,7 +64,6 @@ async def handle_info(request):
         server list search result
     * same type server message exchange    
     """
-
     return web.Response(text='1')
 
 async def start_background_tasks(app):
@@ -70,13 +77,13 @@ async def start_background_tasks(app):
 @web.middleware
 async def server_redirect(request, handler):    
     cookies = request.cookies
-    print('server redirect s', ' the cookie is: ',cookies)    
+    # print('server redirect s', ' the cookie is: ',cookies)    
     location = cookies.get('redirect')
     if location:
         raise web.HTTPFound('https://www.baidu.com')
     else:
         response = await handler(request)
-        print('server redirect e')
+        # print('server redirect e')
         return response
 
 async def init(app):
@@ -87,7 +94,7 @@ async def init(app):
         appinfo = json.load(f)
     for k in appinfo:
         app[k] = appinfo[k] 
-    session = await aiohttp.ClientSession()
+    session = aiohttp.ClientSession()
     for url in appinfo['connectors']: 
         if len(appinfo['require_type']) <=0:
             break
@@ -104,10 +111,8 @@ async def init(app):
                 break                 
                 pass
             except Exception:
-                pass  
-              
-            
-    session.close()
+                pass             
+    await session.close()
 
 async def main(loop):
     app = web.Application(middlewares=[server_redirect])  
@@ -115,6 +120,12 @@ async def main(loop):
     await init(app)
     app['emailcode'] = {}
     app.on_startup.append(start_background_tasks)
+
+    # fernet_key = fernet.Fernet.generate_key()
+    # secret_key = base64.urlsafe_b64decode(fernet_key)
+    # setup(app, EncryptedCookieStorage(secret_key))
+    setup(app, SimpleCookieStorage())
+
     # app.on_cleanup.append(cleanup_background_tasks)
     aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('./views'))    
     routes.static('/s', './public', append_version=True)

@@ -10,6 +10,7 @@ async def post(url, data):
             pass
         except Exception:
             pass
+    await session.close()
 
 async def get(url):
     session = await aiohttp.ClientSession()      
@@ -20,3 +21,4 @@ async def get(url):
             pass
         except Exception:
             pass
+    await session.close()
