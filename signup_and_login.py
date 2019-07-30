@@ -1,6 +1,7 @@
 import asyncio
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from aiohttp_session import get_session, new_session
 import aiosmtplib
 import random
 import time
@@ -55,26 +56,22 @@ async def signup(request):
     """
     data = await request.post()
     sig = {'Password': data['inputPassword'], 'Address': data['inputAddress']}
-    
-    async def sureAnswer(urls, si):
-        """
-        request log in to fabric hyperledger
-        """
-        url = random.choice(urls)
-        url += '/signup'
-        ans = await utils.post(url, si)
-        if not ans.get('signup'):
-            urls.remove(url)
-            await sureAnswer(urls, si)
-        else:
-            return ans
-
     urls = request.app['fabric'].copy()
-    signup_result = await sureAnswer(urls, sig)    
+    signup_result = await utils.sureAnswer(urls, '/signup', sig)    
     # here deal with the signup_result to fit the page side
     return signup_result
 
 async def login (request):
+    #log in to fabric
+    #creat session
+    #store password or address to redes
+    data = await request.post()
+    logi = {'Password': data['inputPassword'], 'Address': data['inputAddress']}    
+    urls = request.app['fabric'].copy()
+    login_result = await utils.sureAnswer(urls,'/login', logi)
+    session = await new_session(request)
+    session['keepalive'] = login_result['login_hash']
+    return login_result
     pass
 
 

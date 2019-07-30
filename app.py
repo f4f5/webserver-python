@@ -9,7 +9,9 @@ from aiohttp_session import setup, get_session, new_session
 from aiohttp_session  import SimpleCookieStorage  #EncryptedCookieStorage
 from cryptography import fernet
 import base64
-import jsons
+import json
+import aioredis
+import utils
 
 routes = web.RouteTableDef()
 
@@ -45,6 +47,12 @@ async def handler5(request):
     session['last'] = 5555555
     return {'name': 'Andrew', 'surname': 'Svetlov'}
 
+@routes.get('/')
+@aiohttp_jinja2.template('navigate.html')
+async def handler6(request):
+    return {'name': 'Andrew', 'surname': 'Svetlov'}
+
+
 @routes.post('/signup_emailcheck')
 async def check_email(request):
     return web.Response(text=await sign.checkEmail(request))
@@ -52,6 +60,10 @@ async def check_email(request):
 @routes.post('/signup_signup')
 async def signup(request):    
     return web.Response(text=await sign.signup(request))
+
+@routes.post('/signup_login')
+async def login(request):
+    return web.Response(text=await sign.login(request))
 
 @routes.post('/send_info_to')
 async def handle_info(request):
@@ -94,25 +106,20 @@ async def init(app):
         appinfo = json.load(f)
     for k in appinfo:
         app[k] = appinfo[k] 
-    session = aiohttp.ClientSession()
-    for url in appinfo['connectors']: 
-        if len(appinfo['require_type']) <=0:
-            break
-        nexturl = url.strip('/')+'/get_server/'
-        for item in appinfo['require_type']:
-            nexturl += item+'&'          
-        async with session.get(nexturl) as resp:
-            ans = await resp.text()
-            print('request for connector answer ',ans)  
-            try:
-                ans = json.loads(ans)
-                for item in appinfo['require_type']:
-                    app[item] = ans[item]
-                break                 
-                pass
-            except Exception:
-                pass             
-    await session.close()
+
+    #initialize redis
+    app['redis'] = await aioredis.create_redis_pool(
+        'redis://localhost',
+        minsize=5, maxsize=10,
+        loop=app['loop'])
+    
+    #requst connector for  
+    path = '/get_server/'
+    for item in appinfo['require_type']:
+        path += item+'&'       
+    ans = await utils.sureAnswer(appinfo['connectors'], path.strip('&'))
+    for item in appinfo['require_type']:
+        app[item] = ans[item]  
 
 async def main(loop):
     app = web.Application(middlewares=[server_redirect])  
