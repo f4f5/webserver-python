@@ -10,6 +10,7 @@ from aiohttp_session  import SimpleCookieStorage  #EncryptedCookieStorage
 from cryptography import fernet
 import base64
 import json
+import aioredis
 
 routes = web.RouteTableDef()
 
@@ -53,6 +54,10 @@ async def check_email(request):
 async def signup(request):    
     return web.Response(text=await sign.signup(request))
 
+@routes.post('/signup_login')
+async def login(request):
+    return web.Response(text=await sign.login(request))
+
 @routes.post('/send_info_to')
 async def handle_info(request):
     data = await request.post()
@@ -94,6 +99,12 @@ async def init(app):
         appinfo = json.load(f)
     for k in appinfo:
         app[k] = appinfo[k] 
+    
+    app['redis'] = await aioredis.create_redis_pool(
+        'redis://localhost',
+        minsize=5, maxsize=10,
+        loop=app['loop'])
+
     session = aiohttp.ClientSession()
     for url in appinfo['connectors']: 
         if len(appinfo['require_type']) <=0:
