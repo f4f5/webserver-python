@@ -9,7 +9,7 @@ from aiohttp_session import setup, get_session, new_session
 from aiohttp_session  import SimpleCookieStorage  #EncryptedCookieStorage
 from cryptography import fernet
 import base64
-import json
+import jsons
 
 routes = web.RouteTableDef()
 
