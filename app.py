@@ -108,18 +108,18 @@ async def init(app):
         app[k] = appinfo[k] 
 
     #initialize redis
-    app['redis'] = await aioredis.create_redis_pool(
-        'redis://localhost',
-        minsize=5, maxsize=10,
-        loop=app['loop'])
+    # app['redis'] = await aioredis.create_redis_pool(
+    #     'redis://localhost',
+    #     minsize=5, maxsize=10,
+    #     loop=app['loop'])
     
     #requst connector for  
-    path = '/get_server/'
-    for item in appinfo['require_type']:
-        path += item+'&'       
-    ans = await utils.sureAnswer(appinfo['connectors'], path.strip('&'))
-    for item in appinfo['require_type']:
-        app[item] = ans[item]  
+    # path = '/get_server/'
+    # for item in appinfo['require_type']:
+    #     path += item+'&'       
+    # ans = await utils.sureAnswer(appinfo['connectors'], path.strip('&'))
+    # for item in appinfo['require_type']:
+    #     app[item] = ans[item]  
 
 async def main(loop):
     app = web.Application(middlewares=[server_redirect])  
