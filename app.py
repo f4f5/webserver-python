@@ -50,7 +50,14 @@ async def handler5(request):
 @routes.get('/')
 @aiohttp_jinja2.template('navigate.html')
 async def handler6(request):
-    return {'name': 'Andrew', 'surname': 'Svetlov'}
+    servers=[
+        {
+            'url':'http://localhost:8080',
+            'img':'/s/img/test.png',
+            'des':'hello world'
+        }
+    ]*9
+    return {'servers': servers, 'surname': 'Svetlov'}
 
 
 @routes.post('/signup_emailcheck')
