@@ -34,42 +34,50 @@
         </div>         
     </div> 
 
-    <div class="accordion" id="accordion">
-        <div style="height: 5em;" class="row align-items-center">
-            <div class="col-10">
-                <button type="button" class="btn btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">寄售</button>
-                <button type="button" class="btn btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">价格行情</button>
-                <!-- <button type="button" class="btn btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">我的寄售</button>
-                <button type="button" class="btn btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">寄售历史</button> -->
-            </div>
+    <div style="height: 5em;" class="row align-items-center">
+        <div class="col-10" id="collapseButtons" onclick="collapseClick();">
+            <button type="button" class="btn btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">寄售</button>
+            <button type="button" class="btn btn btn-primary active" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">价格行情</button>
+            <button type="button" class="btn btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">我的寄售</button>
+            <button type="button" class="btn btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">寄售历史</button>
         </div>
-    
+    </div>
 
-        <div class="collapse" id="collapseOne">
-            <div class="card card-body">
-                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-            </div>
-        </div>
 
-        <div class="collapse show" id="collapseTwo">
-            <div class="card card-body">
-                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-            </div>
+    <div class="collapse" id="collapseOne">
+        <div class="card card-body">
+            Trade Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
         </div>
-        <!-- <div class="collapse" id="collapseThree">
-            <div class="card card-body">
-                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-            </div>
+    </div>
+
+    <div class="collapse show" id="collapseTwo">
+        <div class="card card-body">
+            Market Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
         </div>
-        <div class="collapse" id="collapseFour">
-            <div class="card card-body">
-                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-            </div>
-        </div> -->
-    </div> 
+    </div>
+    <div class="collapse" id="collapseThree">
+        <div class="card card-body">
+            MyOrder Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+        </div>
+    </div>
+    <div class="collapse" id="collapseFour">
+        <div class="card card-body">
+            MyHistory Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+        </div>
+    </div>
 </div>
 
 {% endblock %}
 
 {% block scripts %}
+<script>        
+    $((function(){
+        $('#collapseButtons button').click(function(){
+            $(this).addClass('active').siblings().removeClass('active')
+        })
+    })());
+    var collapseClick=function(){
+        $('.collapse').collapse('hide');        
+    }
+</script>
 {% endblock %}
