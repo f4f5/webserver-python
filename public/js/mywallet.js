@@ -1,4 +1,5 @@
 var loadDataAndRender = function(url, data_des, renderFun){
+    console.log($);
     $.post(url, data_des,
     function(data,status){
         if(status=='success'){
