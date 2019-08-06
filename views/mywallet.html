@@ -37,12 +37,12 @@
     <div style="height: 5em;" class="row align-items-center">
         <div class="col-10" id="collapseButtons" onclick="collapseClick();">
             <button type="button" class="btn btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">寄售</button>
-            <button type="button" class="btn btn btn-primary active" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">价格行情</button>
+            <button type="button" class="btn btn btn-primary active" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">寄售行</button>
             <button type="button" class="btn btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">我的寄售</button>
             <button type="button" class="btn btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">寄售历史</button>
+            <button type="button" class="btn btn btn-primary" type="button" >行情数据</button>
         </div>
     </div>
-
 
     <div class="collapse" id="collapseOne">
         <div class="card card-body">
@@ -100,18 +100,20 @@
             <table class="table table-sm">
                 <thead>
                   <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Credit</th>
+                    <th scope="col">Exchange For</th>
+                    <th scope="col">Pay Method</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody id="tradeTable">
                   <tr>
                     <th scope="row">1</th>
                     <td>Mark</td>
                     <td>Otto</td>
                     <td>@mdo</td>
+                    <td> </td>
                   </tr>
                   <tr>
                     <th scope="row">2</th>
@@ -199,11 +201,18 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="/s/js/mywallet.js"></script>
+
 <script>        
     $((function(){
         $('#collapseButtons button').click(function(){
             $(this).addClass('active').siblings().removeClass('active')
         })
+        loadDataAndRender('/mywallet_trade_data', {
+            option: 'all_kind',
+            startIndex: 0,
+            dataNum: 100
+        }, renderTrade)
     })());
     var collapseClick=function(){
         $('.collapse').collapse('hide');        
