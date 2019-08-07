@@ -1,3 +1,6 @@
+/** 
+ * 'hel{} world'.format('lo') => 'hello world'
+ */
 String.prototype.format = function(args) {
     var result = this;
     if (arguments.length < 1) {

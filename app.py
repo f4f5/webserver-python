@@ -74,7 +74,8 @@ async def login(request):
 
 @routes.post('/mywallet_trade_data')
 async def fetch_trade_data(request):
-    ret
+    data = [[1,2,3,4,5]]*10
+    return web.json_response(data)
 
 @routes.post('/send_info_to')
 async def handle_info(request):

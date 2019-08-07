@@ -1,24 +1,38 @@
-var loadDataAndRender = function(url, data_des, renderFun){
-    console.log($);
+/**
+ * load table data from server and render to table.
+ * @param {string} url request url from server.
+ * @param {Object} data_des  describe how to load data if the data is too big
+ * @param {function} renderFun  render function if data receive succeed
+ * @param {selector} selector  css selector to descripe where to push the table's row data.
+ * @return {void} 
+ */
+var loadDataAndRender = function(url, data_des, renderFun, selector){
     $.post(url, data_des,
     function(data,status){
         if(status=='success'){
-            renderFun(data);
+            renderFun(data, selector);
         }
     });    
 }
-var renderTrade = function(data){
-    var cell=[];
+
+var tableCreator = function(n){
+    var str = '<tr>\
+        <th scope="row">{0}</th>\
+        ';
+    for(var i=1;i<n;i++){
+        str+='<td>{'+i+'}</td>\
+        ';
+    }            
+    str+='\
+    </tr>\
+    ';
+    return str;
+}
+
+var renderTable = function(data, selector){
+    var cell=[];   
     for(var index in data){
         cell=data[index];
-        $('#tradeTable').append(`
-        <tr>
-            <th scope="row">{0}</th>
-            <td>{1}</td>
-            <td>{2}</td>
-            <td>{3}</td>
-            <td>{4}</td>
-        </tr>
-        `.format.apply(this, cell));
+        $(selector).append(tableCreator(cell.length).format(cell));
     }
 }

@@ -102,30 +102,14 @@
                   <tr>
                     <th scope="col">Address</th>
                     <th scope="col">Price</th>
+                    <th scope="col">Amout</th>
                     <th scope="col">Credit</th>
                     <th scope="col">Exchange For</th>
                     <th scope="col">Pay Method</th>
                   </tr>
                 </thead>
-                <tbody id="tradeTable">
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                    <td> </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td colspan="2">Larry the Bird</td>
-                    <td>@twitter</td>
-                  </tr>
+                <tbody id="TradeTable">
+                  
                 </tbody>
               </table>
         </div>
@@ -135,30 +119,14 @@
             <table class="table table-sm">
                 <thead>
                   <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Exchange For</th>
+                    <th scope="col">Pay Method</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td colspan="2">Larry the Bird</td>
-                    <td>@twitter</td>
-                  </tr>
+                <tbody id="MyTrade">
+                  
                 </tbody>
               </table>
         </div>
@@ -168,30 +136,14 @@
             <table class="table table-sm">
                 <thead>
                   <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">ToAddress</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Result</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td colspan="2">Larry the Bird</td>
-                    <td>@twitter</td>
-                  </tr>
+                <tbody id="TradeHistory">
                 </tbody>
               </table>
         </div>
@@ -211,7 +163,17 @@
             option: 'all_kind',
             startIndex: 0,
             dataNum: 100
-        }, renderTrade)
+        }, renderTable, '#TradeTable');
+        loadDataAndRender('/mywallet_trade_data', {
+            option: 'all_kind',
+            startIndex: 0,
+            dataNum: 100
+        }, renderTable, '#MyTrade');
+        loadDataAndRender('/mywallet_trade_data', {
+            option: 'all_kind',
+            startIndex: 0,
+            dataNum: 100
+        }, renderTable, '#TradeHistory');
     })());
     var collapseClick=function(){
         $('.collapse').collapse('hide');        
