@@ -72,6 +72,10 @@ async def signup(request):
 async def login(request):
     return web.Response(text=await sign.login(request))
 
+@routes.post('/mywallet_trade_data')
+async def fetch_trade_data(request):
+    ret
+
 @routes.post('/send_info_to')
 async def handle_info(request):
     data = await request.post()
