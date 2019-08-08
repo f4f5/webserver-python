@@ -20,6 +20,10 @@ routes = web.RouteTableDef()
 async def handler1(request):
     return {'name': 'Andrew', 'surname': 'Svetlov'}
 
+@routes.get('/pricehistory')
+@aiohttp_jinja2.template('pricehistory.html')
+async def handler_ph(request):
+    return
 
 @routes.get('/detail')
 @aiohttp_jinja2.template('detail.html')
