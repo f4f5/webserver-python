@@ -81,6 +81,22 @@ async def fetch_trade_data(request):
     data = [[1,2,3,4,5]]*10
     return web.json_response(data)
 
+
+
+@routes.post('/tem_for_pricehistory')
+async def fetch_trade_data(request):
+    """
+        0: "2011-01-01↵00:01:00"
+        1: 3765.34   O
+        2: 3765.34   C
+        3: 3761.34   L
+        4: 3763.21   H
+        5: "3841987" V
+        6: -1        Sign
+    """
+    data = [["2011-01-01↵00:01:00", 3765.34, 3766.34, 3761.31, 3763.23, 1]]*1000
+    return web.json_response(data)
+
 @routes.post('/send_info_to')
 async def handle_info(request):
     data = await request.post()
