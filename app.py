@@ -1,7 +1,9 @@
 # server_simple.py
 from aiohttp import web
+import random
 import aiohttp
 import asyncio
+from datetime import datetime
 import aiohttp_jinja2
 from aiohttp_jinja2 import jinja2
 import signup_and_login as sign
@@ -63,6 +65,10 @@ async def handler6(request):
     ]*9
     return {'servers': servers, 'surname': 'Svetlov'}
 
+@routes.get('/pricehistory')
+@aiohttp_jinja2.template('pricehistory.html')
+async def render_history_data(request):
+   return
 
 @routes.post('/signup_emailcheck')
 async def check_email(request):
@@ -83,18 +89,49 @@ async def fetch_trade_data(request):
 
 
 
-@routes.post('/tem_for_pricehistory')
+@routes.get('/tem_for_pricehistory')
 async def fetch_trade_data(request):
     """
         0: "2011-01-01↵00:01:00"
         1: 3765.34   O
-        2: 3765.34   C
+        2: 3765.34   H
         3: 3761.34   L
-        4: 3763.21   H
+        4: 3763.21   C
         5: "3841987" V
         6: -1        Sign
     """
-    data = [["2011-01-01↵00:01:00", 3765.34, 3766.34, 3761.31, 3763.23, 1]]*1000
+    start = datetime.timestamp(datetime.now()) - 10*365*24*3600
+    def parsetime(n):
+        now = start + n * 60        
+        return datetime.strftime(datetime.fromtimestamp(now), "%y-%m-%d\n%H:%M:%S")
+    
+    sdata = [3765.34, 3769.34, 3760.31, 3767.23, '283823', 1]    
+    ldata = sdata.copy()
+    def parsedata():
+        ran = random.random()
+        if ran>0.5:
+            sign=1
+        else:
+            sign=-1
+        scale = 100*(ran-0.5)
+        
+        if sign>0:
+            ldata[0] = ldata[3] + ran*10  #open
+            ldata[3] +=scale  #close
+            ldata[2] = ldata[0] - random.random()*40 #low
+            ldata[1] = ldata[3] + random.random()*40 #high
+            ldata[4] = str(int(100000*random.random()))
+            ldata[5] = sign
+        else:
+            ldata[0] = ldata[3] - ran*10 #open
+            ldata[3] +=scale                #close
+            ldata[2] = ldata[3] - random.random()*40 #low
+            ldata[1] = ldata[0] + random.random()*50  #high
+            ldata[4] = str(int(100000*random.random()))
+            ldata[5] = sign
+        return ldata.copy()
+          
+    data = [[parsetime(i), *parsedata()] for i in range(10000)]
     return web.json_response(data)
 
 @routes.post('/send_info_to')

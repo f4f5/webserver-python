@@ -21,11 +21,10 @@
     var downBorderColor = '#008F28';
 
     var dataCount = 2e2;
-    var data = generateOHLC(dataCount);
-    console.log(data);
+    
     var option = {
         dataset: {
-            source: data
+            
         },
         title: {
             text: 'Data Amount: ' + echarts.format.addCommas(dataCount)
@@ -172,11 +171,17 @@
         here need to be c
         */
 
-        $.ajax(
+        $.ajax({
+            async:false,
+            url: '/tem_for_pricehistory',
+            success: function(result){
+                option.dataset.source = result;
+                if (option && typeof option === "object") {
+                    myChart.setOption(option, true);
+                }
+            }
+        });
 
-        );
-
-        return data;
 
         function getSign(data, dataIndex, openVal, closeVal, closeDimIdx) {
             var sign;
@@ -198,9 +203,9 @@
         }
     };
     
-    if (option && typeof option === "object") {
-        myChart.setOption(option, true);
-    }
+    
+
+    generateOHLC(dataCount);
 
 </script>
 
