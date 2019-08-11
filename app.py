@@ -87,10 +87,8 @@ async def fetch_trade_data(request):
     data = [[1,2,3,4,5]]*10
     return web.json_response(data)
 
-
-
 @routes.get('/tem_for_pricehistory')
-async def fetch_trade_data(request):
+async def fetch_price_history(request):
     """
         0: "2011-01-01↵00:01:00"
         1: 3765.34   O
@@ -102,8 +100,8 @@ async def fetch_trade_data(request):
     """
     start = datetime.timestamp(datetime.now()) - 10*365*24*3600
     def parsetime(n):
-        now = start + n * 60        
-        return datetime.strftime(datetime.fromtimestamp(now), "%y-%m-%d\n%H:%M:%S")
+        now = start + n * 3600        
+        return datetime.strftime(datetime.fromtimestamp(now), "%Y-%m-%d\n%H:%M:%S")
     
     sdata = [3765.34, 3769.34, 3760.31, 3767.23, '283823', 1]    
     ldata = sdata.copy()
@@ -127,7 +125,7 @@ async def fetch_trade_data(request):
             ldata[3] +=scale                #close
             ldata[2] = ldata[3] - random.random()*40 #low
             ldata[1] = ldata[0] + random.random()*50  #high
-            ldata[4] = str(int(100000*random.random()))
+            ldata[4] = str(int(10000*random.random()))
             ldata[5] = sign
         return ldata.copy()
           
