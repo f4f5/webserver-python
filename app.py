@@ -14,6 +14,7 @@ import base64
 import json
 import aioredis
 import utils
+import pyeos_client
 
 routes = web.RouteTableDef()
 
