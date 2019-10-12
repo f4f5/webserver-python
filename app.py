@@ -14,7 +14,6 @@ import base64
 import json
 import aioredis
 import utils
-import pyeos_client
 
 routes = web.RouteTableDef()
 
@@ -160,7 +159,7 @@ async def server_redirect(request, handler):
     # print('server redirect s', ' the cookie is: ',cookies)    
     location = cookies.get('redirect')
     if location:
-        raise web.HTTPFound('https://www.baidu.com')
+        raise web.HTTPFound('https://github.com')
     else:
         response = await handler(request)
         # print('server redirect e')
